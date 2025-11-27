@@ -549,6 +549,7 @@ from server.ultra_api import router as ultra_router
 from server.mega_api import router as mega_router
 from server.intelligence_api import router as intelligence_router
 from server.mega_intelligence_api import router as mega_intelligence_router
+from server.tera_engine_api import router as tera_router
 app.include_router(conversion_router)
 app.include_router(advanced_router)
 app.include_router(giga_router)
@@ -558,6 +559,7 @@ app.include_router(ultra_router)
 app.include_router(mega_router)
 app.include_router(intelligence_router)
 app.include_router(mega_intelligence_router)
+app.include_router(tera_router)
 
 if __name__ == '__main__':
     uvicorn.run(
