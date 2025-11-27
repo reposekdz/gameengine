@@ -1,0 +1,83 @@
+version: '3.8'
+
+services:
+  tera-engine:
+    build: .
+    container_name: tera-engine
+    ports:
+      - "5000:5000"
+    environment:
+      - DB_HOST=mysql
+      - DB_PORT=3306
+      - DB_NAME=tera_engine
+      - DB_USER=tera_user
+      - DB_PASSWORD=tera_password
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - API_KEY=${API_KEY}
+      - CUDA_VISIBLE_DEVICES=0
+    volumes:
+      - ./assets:/app/assets
+      - ./cache:/app/cache
+      - ./logs:/app/logs
+    depends_on:
+      - mysql
+      - redis
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    restart: unless-stopped
+
+  mysql:
+    image: mysql:8.0
+    container_name: tera-mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=root_password
+      - MYSQL_DATABASE=tera_engine
+      - MYSQL_USER=tera_user
+      - MYSQL_PASSWORD=tera_password
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./database/schema.sql:/docker-entrypoint-initdb.d/schema.sql
+    ports:
+      - "3306:3306"
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    container_name: tera-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+
+  celery-worker:
+    build: .
+    container_name: tera-celery
+    command: celery -A server.web_server.celery_app worker --loglevel=info --concurrency=8
+    environment:
+      - DB_HOST=mysql
+      - REDIS_HOST=redis
+    volumes:
+      - ./assets:/app/assets
+      - ./cache:/app/cache
+    depends_on:
+      - mysql
+      - redis
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    restart: unless-stopped
+
+volumes:
+  mysql_data:
+  redis_data:
