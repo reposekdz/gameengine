@@ -560,6 +560,7 @@ app.include_router(mega_router)
 app.include_router(intelligence_router)
 app.include_router(mega_intelligence_router)
 app.include_router(tera_router)
+app.include_router(game_router)
 
 if __name__ == '__main__':
     uvicorn.run(
