@@ -544,10 +544,12 @@ from server.api_extensions import router as conversion_router
 from server.advanced_api import router as advanced_router
 from server.ultimate_api import router as giga_router
 from server.giga_api_extensions import router as giga_ext_router
+from server.customization_api import router as customization_router
 app.include_router(conversion_router)
 app.include_router(advanced_router)
 app.include_router(giga_router)
 app.include_router(giga_ext_router)
+app.include_router(customization_router)
 
 if __name__ == '__main__':
     uvicorn.run(
