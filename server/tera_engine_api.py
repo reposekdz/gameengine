@@ -8,6 +8,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from engine.core.system_integrator import MASTER_SYSTEM
 from engine.ai.mega_intelligence import MegaIntelligenceSystem
+from engine.generators.tera_text_to_3d import TeraTextTo3DEngine, TeraImageTo3DEngine, Tera3DToGameEngine, TeraModelTraining
 
 router = APIRouter(prefix="/api/v1/tera", tags=["tera_engine"])
 
